@@ -19,27 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="240110_14.cpp" />
-    <ClCompile Include="240110_15.cpp" />
-    <ClCompile Include="240110_16.cpp" />
-    <ClCompile Include="240110_17.cpp" />
-    <ClCompile Include="240110_18.cpp" />
-    <ClCompile Include="240110_19.cpp" />
-    <ClCompile Include="240110_20.cpp" />
-    <ClCompile Include="240110_21.cpp" />
-    <ClCompile Include="250110_1.cpp" />
-    <ClCompile Include="250110_10.cpp" />
-    <ClCompile Include="250110_11.cpp" />
-    <ClCompile Include="250110_12.cpp" />
-    <ClCompile Include="250110_13.cpp" />
-    <ClCompile Include="250110_2.cpp" />
-    <ClCompile Include="250110_3.cpp" />
-    <ClCompile Include="250110_4.cpp" />
-    <ClCompile Include="250110_5.cpp" />
-    <ClCompile Include="250110_6.cpp" />
-    <ClCompile Include="250110_7.cpp" />
-    <ClCompile Include="250110_8.cpp" />
-    <ClCompile Include="250110_9.cpp" />
+    <ClCompile Include="250115_5.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
