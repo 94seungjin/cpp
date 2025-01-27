@@ -1,0 +1,38 @@
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+float slope(vector<int> point1, vector<int> point2 )
+{
+    // 기울기 구하기 (y2-y1) / (x2-x1)
+    return static_cast<float>(point2[1] - point1[1]) / (point2[0] - point1[0]);
+}
+
+int solution(vector<vector<int>> dots)
+{    
+    vector<pair<int, int>> pairs = {
+        {0,1}, {2,3},
+        {0,2}, {1,3},
+        {0,3}, {1,2}        
+    };
+    
+    for(int i = 0; i < pairs.size(); i += 2)
+    {
+        int a = pairs[i].first;
+        int b = pairs[i].second;
+        
+        int c = pairs[i + 1].first;
+        int d = pairs[i + 1].second;
+        
+        float slope1 = slope(dots[a], dots[b]);
+        float slope2 = slope(dots[c], dots[d]);        
+        
+        if (slope1 == slope2)
+        {
+            return 1;
+        }
+    }
+    
+    return 0;
+}
