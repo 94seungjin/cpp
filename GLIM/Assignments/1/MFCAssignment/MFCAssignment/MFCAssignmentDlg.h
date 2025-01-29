@@ -47,6 +47,8 @@ private:
 	int m_dragIndex = -1;			// 드래그 중인 점의 인덱스
 	bool m_isDragging = false;		// 현재 드래그 상태인지 여부
 
+	void UpdateCoordinatesUI();
+
 public:
 	void OnDestroy();
 	void OnLButtonDown(UINT nFlags, CPoint point);

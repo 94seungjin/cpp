@@ -240,6 +240,7 @@ void CMFCAssignmentDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	if (m_clickPoints.size() < 3)
 	{
 		m_clickPoints.push_back(point);	// 클릭 좌표 저장
+		UpdateCoordinatesUI();
 		Invalidate();					// 화면 갱신
 		UpdateWindow();
 	}
@@ -264,6 +265,7 @@ void CMFCAssignmentDlg::OnMouseMove(UINT nFlags, CPoint point)
 		point.y = max(clientRect.top, min(point.y, clientRect.bottom));
 
 		m_clickPoints[m_dragIndex] = point;
+		UpdateCoordinatesUI();
 		Invalidate(); // 화면 갱신
 	}
 
@@ -290,7 +292,26 @@ void CMFCAssignmentDlg::OnBnClickedBtnReset()
 
 void CMFCAssignmentDlg::OnBnClickedBtnRandom()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	srand(static_cast<unsigned int>(time(nullptr)));
+
+	CRect clientRect;
+	GetClientRect(&clientRect);
+
+	if (m_clickPoints.size() == 3)
+	{
+		for (auto& point : m_clickPoints)
+		{
+			point.x = clientRect.left + rand() % (clientRect.Width());
+			point.y = clientRect.top + rand() % (clientRect.Height());
+		}
+		UpdateCoordinatesUI();
+		Invalidate();
+		UpdateWindow();
+	}
+	else
+	{
+		AfxMessageBox(L"점 3개를 먼저 찍어야합니다.");
+	}
 }
 
 
@@ -313,4 +334,22 @@ void CMFCAssignmentDlg::OnEnChangeEditThickness()
 void CMFCAssignmentDlg::OnStnClickedStaticCoordinates()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CMFCAssignmentDlg::UpdateCoordinatesUI()
+{
+	CString coordinatesText;
+	
+	if (m_clickPoints.size() == 3)
+	{
+		coordinatesText.Format(L"Point 1 : (%d, %d) /\n Point 2 : (%d, %d) /\n Point 3 : (%d, %d)",
+			m_clickPoints[0].x, m_clickPoints[0].y,
+			m_clickPoints[1].x, m_clickPoints[1].y,
+			m_clickPoints[2].x, m_clickPoints[2].y);
+	}
+	else
+	{
+		coordinatesText = L"점 3개를 클릭하시오";
+	}
+	SetDlgItemText(IDC_STATIC_COORDINATES, coordinatesText);
 }
