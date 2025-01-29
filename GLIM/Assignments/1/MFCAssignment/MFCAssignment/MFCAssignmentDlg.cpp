@@ -51,7 +51,7 @@ END_MESSAGE_MAP()
 
 
 CMFCAssignmentDlg::CMFCAssignmentDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_MFCASSIGNMENT_DIALOG, pParent), m_radius(0), m_thickness(0), gdiplusToken(0)
+	: CDialogEx(IDD_MFCASSIGNMENT_DIALOG, pParent), mRadius(0), mThickness(0), mGdiplusToken(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -83,7 +83,7 @@ BOOL CMFCAssignmentDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// GDI+ 초기화
-	if (GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr) != Ok)
+	if (GdiplusStartup(&mGdiplusToken, &mGdiplusStartupInput, nullptr) != Ok)
 	{
 		AfxMessageBox(L"GDI+ initialization failed!");
 		return FALSE; // 초기화 실패 시 종료
@@ -121,7 +121,7 @@ BOOL CMFCAssignmentDlg::OnInitDialog()
 
 void CMFCAssignmentDlg::OnDestroy()
 {
-	GdiplusShutdown(gdiplusToken); // GDI+ 해제
+	GdiplusShutdown(mGdiplusToken); // GDI+ 해제
 	CDialogEx::OnDestroy();
 }
 
@@ -167,11 +167,11 @@ void CMFCAssignmentDlg::OnPaint()
 		GetClientRect(&clientRect);
 
 		// 펜 및 브러시 설정
-		Pen pen(Color(255, 0, 0, 0), static_cast<REAL>(max(3,m_thickness))); // 빨간색 펜
+		Pen pen(Color(255, 0, 0, 0), static_cast<REAL>(max(3,mThickness))); // 빨간색 펜
 		SolidBrush brush(Color(255, 0, 0, 0));                          // 검은색 브러시
 
 		// 클릭된 점 그리기
-		for (const auto& point : m_clickPoints)
+		for (const auto& point : mClickPoints)
 		{
 			if (clientRect.PtInRect(point)) // 점이 클라이언트 영역 안에 있을 때만 그림
 			{
@@ -180,14 +180,14 @@ void CMFCAssignmentDlg::OnPaint()
 		}
 
 		// 클릭이 3개일 경우 원 그리기
-		if (m_clickPoints.size() == 3)
+		if (mClickPoints.size() == 3)
 		{
-			double x1 = static_cast<double>(m_clickPoints[0].x);
-			double y1 = static_cast<double>(m_clickPoints[0].y);
-			double x2 = static_cast<double>(m_clickPoints[1].x);
-			double y2 = static_cast<double>(m_clickPoints[1].y);
-			double x3 = static_cast<double>(m_clickPoints[2].x);
-			double y3 = static_cast<double>(m_clickPoints[2].y);
+			double x1 = static_cast<double>(mClickPoints[0].x);
+			double y1 = static_cast<double>(mClickPoints[0].y);
+			double x2 = static_cast<double>(mClickPoints[1].x);
+			double y2 = static_cast<double>(mClickPoints[1].y);
+			double x3 = static_cast<double>(mClickPoints[2].x);
+			double y3 = static_cast<double>(mClickPoints[2].y);
 
 			// 삼각형 외접원의 중심
 			double A = x1 * (y2 - y3) - y1 * (x2 - x3) + x2 * y3 - x3 * y2;
@@ -222,30 +222,30 @@ HCURSOR CMFCAssignmentDlg::OnQueryDragIcon()
 
 void CMFCAssignmentDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	m_dragIndex = -1;
-	m_isDragging = false;
+	mDragIndex = -1;
+	mbIsDragging = false;
 
 	// 클릭된 점 중 가까운 점 찾기
-	for (int i = 0; i < m_clickPoints.size(); i++)
+	for (int i = 0; i < mClickPoints.size(); i++)
 	{
-		if (abs(m_clickPoints[i].x - point.x) <= 10 && abs(m_clickPoints[i].y - point.y) <= 10)
+		if (abs(mClickPoints[i].x - point.x) <= 10 && abs(mClickPoints[i].y - point.y) <= 10)
 		{
-			m_dragIndex = i;	// 드래그할 점의 인덱스 저장
-			m_isDragging = true;
+			mDragIndex = i;	// 드래그할 점의 인덱스 저장
+			mbIsDragging = true;
 			break;
 		}
 	}
 
 	// 드래그 중이 아니고, 새로운 점을 추가할 수 있다면 추가
-	if (m_clickPoints.size() < 3)
+	if (mClickPoints.size() < 3)
 	{
-		m_clickPoints.push_back(point);	// 클릭 좌표 저장
-		UpdateCoordinatesUI();
+		mClickPoints.push_back(point);	// 클릭 좌표 저장
+		updateCoordinatesUI();
 		Invalidate();					// 화면 갱신
 		UpdateWindow();
 	}
 
-	if (m_clickPoints.size() == 3)
+	if (mClickPoints.size() == 3)
 	{
 		Invalidate();
 	}
@@ -258,14 +258,14 @@ void CMFCAssignmentDlg::OnMouseMove(UINT nFlags, CPoint point)
 	CRect clientRect;
 	GetClientRect(&clientRect);
 
-	if (m_isDragging && m_dragIndex != -1)
+	if (mbIsDragging && mDragIndex != -1)
 	{
 		// 드래그 좌표를 클라이언트 영역 안으로 제한
 		point.x = max(clientRect.left, min(point.x, clientRect.right));
 		point.y = max(clientRect.top, min(point.y, clientRect.bottom));
 
-		m_clickPoints[m_dragIndex] = point;
-		UpdateCoordinatesUI();
+		mClickPoints[mDragIndex] = point;
+		updateCoordinatesUI();
 		Invalidate(); // 화면 갱신
 	}
 
@@ -274,10 +274,10 @@ void CMFCAssignmentDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 void CMFCAssignmentDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	if (m_isDragging)
+	if (mbIsDragging)
 	{
-		m_isDragging = false;  // 드래그 종료
-		m_dragIndex = -1;      // 선택 해제
+		mbIsDragging = false;  // 드래그 종료
+		mDragIndex = -1;      // 선택 해제
 	}
 
 	CDialogEx::OnLButtonUp(nFlags, point);
@@ -285,7 +285,7 @@ void CMFCAssignmentDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CMFCAssignmentDlg::OnBnClickedBtnReset()
 {
-	m_clickPoints.clear();	// 클릭 좌표 초기화
+	mClickPoints.clear();	// 클릭 좌표 초기화
 	Invalidate();			// 화면 다시 그리기
 }
 
@@ -297,14 +297,14 @@ void CMFCAssignmentDlg::OnBnClickedBtnRandom()
 	CRect clientRect;
 	GetClientRect(&clientRect);
 
-	if (m_clickPoints.size() == 3)
+	if (mClickPoints.size() == 3)
 	{
-		for (auto& point : m_clickPoints)
+		for (auto& point : mClickPoints)
 		{
 			point.x = clientRect.left + rand() % (clientRect.Width());
 			point.y = clientRect.top + rand() % (clientRect.Height());
 		}
-		UpdateCoordinatesUI();
+		updateCoordinatesUI();
 		Invalidate();
 		UpdateWindow();
 	}
@@ -319,7 +319,7 @@ void CMFCAssignmentDlg::OnEnChangeEditRadius()
 {
 	CString strValue;
 	GetDlgItemText(IDC_EDIT_RADIUS, strValue);
-	m_radius = _ttoi(strValue);
+	mRadius = _ttoi(strValue);
 }
 
 
@@ -327,7 +327,7 @@ void CMFCAssignmentDlg::OnEnChangeEditThickness()
 {
 	CString strValue;
 	GetDlgItemText(IDC_EDIT_THICKNESS, strValue);
-	m_thickness = _ttoi(strValue);
+	mThickness = _ttoi(strValue);
 }
 
 
@@ -336,16 +336,16 @@ void CMFCAssignmentDlg::OnStnClickedStaticCoordinates()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
 
-void CMFCAssignmentDlg::UpdateCoordinatesUI()
+void CMFCAssignmentDlg::updateCoordinatesUI()
 {
 	CString coordinatesText;
 	
-	if (m_clickPoints.size() == 3)
+	if (mClickPoints.size() == 3)
 	{
 		coordinatesText.Format(L"Point 1 : (%d, %d) /\n Point 2 : (%d, %d) /\n Point 3 : (%d, %d)",
-			m_clickPoints[0].x, m_clickPoints[0].y,
-			m_clickPoints[1].x, m_clickPoints[1].y,
-			m_clickPoints[2].x, m_clickPoints[2].y);
+			mClickPoints[0].x, mClickPoints[0].y,
+			mClickPoints[1].x, mClickPoints[1].y,
+			mClickPoints[2].x, mClickPoints[2].y);
 	}
 	else
 	{

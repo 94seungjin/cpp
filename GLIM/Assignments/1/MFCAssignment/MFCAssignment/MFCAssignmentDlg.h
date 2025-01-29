@@ -39,15 +39,15 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	vector<CPoint> m_clickPoints;	// 클릭된 좌표를 저장
-	int m_radius;					// 사용자 입력 반지름
-	int m_thickness;				// 외곽선의 두께
-	GdiplusStartupInput gdiplusStartupInput;
-	ULONG_PTR gdiplusToken = 0;
-	int m_dragIndex = -1;			// 드래그 중인 점의 인덱스
-	bool m_isDragging = false;		// 현재 드래그 상태인지 여부
+	vector<CPoint> mClickPoints;	// 클릭된 좌표를 저장
+	int mRadius;					// 사용자 입력 반지름
+	int mThickness;				// 외곽선의 두께
+	GdiplusStartupInput mGdiplusStartupInput;
+	ULONG_PTR mGdiplusToken = 0;
+	int mDragIndex = -1;			// 드래그 중인 점의 인덱스
+	bool mbIsDragging = false;		// 현재 드래그 상태인지 여부
 
-	void UpdateCoordinatesUI();
+	void updateCoordinatesUI();
 
 public:
 	void OnDestroy();
